@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Case</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/case.css">
+    <style>
+        /* Все стили остаются без изменений */
+        #open-case {
+            background: #1a1c2c;
+            color: white;
+            border: 2px solid #2962ff;
+            font-size: 18px;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #open-case:hover {
+            background: #2962ff;
+            transform: scale(1.05);
+        }
+
+        .balance-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-left: auto;
+            margin-right: 20px;
+        }
+        
+        .balance-label {
+            font-size: 14px;
+            color: #aaa;
+            margin-bottom: 2px;
+        }
+        
+        .balance-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .case-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            width: 100%;
+        }
+        
+        .case-image {
+            width: 200px;
+            height: auto;
+            object-fit: contain;
+            margin: 10px 0;
+            transition: transform 0.3s ease;
+        }
+        
+        .case-image:hover {
+            transform: scale(1.05);
+        }
+        
+        .skins-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            width: 100%;
+            margin-top: 20px;
+        }
+        
+        .skin-cube {
+            background: #1a1c2c;
+            border-radius: 10px;
+            padding: 10px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .skin-cube:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .skin-image {
+            width: 100%;
+            height: 120px;
+            object-fit: contain;
+            border-radius: 5px;
+            margin-bottom: 8px;
+        }
+        
+        .skin-name {
+            font-size: 14px;
+            color: white;
+            margin: 5px 0;
+        }
+        
+        .skin-rarity {
+            font-size: 12px;
+            padding: 3px 6px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+        
+        .common {
+            background-color: #616161;
+            color: white;
+        }
+        
+        .epic {
+            background-color: #7b1fa2;
+            color: white;
+        }
+        
+        .rare {
+            background: linear-gradient(135deg, #ffd700, #ffab00);
+            color: black;
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .roll-box {
+            background: #1a1c2c;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            width: 80%;
+            max-width: 400px;
+        }
+        
+        #slot {
+            font-size: 24px;
+            margin: 20px 0;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        @media (max-width: 500px) {
+            .case-image {
+                width: 150px;
+            }
+            
+            .skin-image {
+                height: 100px;
+            }
+        }
+    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Локализация
+            const texts = {
+                en: {
+                    title: "CS2 CASE",
+                    balance: "Balance:",
+                    openCase: "Open Case (1 TON)",
+                    possibleDrops: "Possible drops:",
+                    exitCatalog: "⮌ Exit to Catalog",
+                    error: "Not enough funds to open case!",
+                    opening: "Opening case...",
+                    rolling: "Rolling...",
+                    close: "Close",
+                    won: "You won:"
+                },
+                ru: {
+                    title: "CS2 КЕЙС",
+                    balance: "Баланс:",
+                    openCase: "Открыть кейс (1 TON)",
+                    possibleDrops: "Возможные выпадения:",
+                    exitCatalog: "⮌ Выйти в каталог",
+                    error: "Недостаточно средств!",
+                    opening: "Открываем кейс...",
+                    rolling: "Прокрутка...",
+                    close: "Закрыть",
+                    won: "Вы выиграли:"
+                }
+            };
+            
+            // Инициализация языка
+            const languageSelector = document.getElementById('language-selector');
+            let lang = localStorage.getItem('lang') || 'en';
+            
+            // Обновление интерфейса
+            function updateLanguage() {
+                document.getElementById('title').textContent = texts[lang].title;
+                document.getElementById('balance-label').textContent = texts[lang].balance;
+                document.getElementById('open-case').textContent = texts[lang].openCase;
+                document.getElementById('drops-label').textContent = texts[lang].possibleDrops;
+                document.getElementById('back-button').textContent = texts[lang].exitCatalog;
+                document.getElementById('overlay-title').textContent = texts[lang].opening;
+                document.getElementById('slot').textContent = texts[lang].rolling;
+                document.getElementById('close-overlay').textContent = texts[lang].close;
+            }
+
+            // Обработчик изменения языка
+            languageSelector.value = lang;
+            languageSelector.addEventListener('change', (e) => {
+                lang = e.target.value;
+                localStorage.setItem('lang', lang);
+                updateLanguage();
+            });
+
+            // Инициализация
+            updateLanguage();
+            
+            // Загрузка баланса
+            let balance = parseFloat(localStorage.getItem("balance")) || 0;
+            document.getElementById("balance-value").textContent = balance.toFixed(2);
+
+            const skins = [
+    { name: "AK-47 | Bloodsport", price: 3.5, rarity: "common", imageUrl: "../skins/ak47_bloodsport.jpg" },
+    { name: "AWP | Mortis", price: 3.2, rarity: "common", imageUrl: "../skins/awp_mortis.jpg" },
+    { name: "M4A4 | Desolate Space", price: 4.0, rarity: "common", imageUrl: "../skins/m4a4_desolatespace.jpg" },
+    { name: "USP-S | Kill Confirmed", price: 3.8, rarity: "common", imageUrl: "../skins/usp_killconfirmed.jpg" },
+    { name: "Desert Eagle | Mecha Industries", price: 4.5, rarity: "common", imageUrl: "../skins/deagle_mechaindustries.jpg" },
+    { name: "Glock-18 | Fade", price: 4.2, rarity: "common", imageUrl: "../skins/glock_fade.jpg" },
+    { name: "P250 | Asiimov", price: 3.5, rarity: "common", imageUrl: "../skins/p250_asiimov.jpg" },
+    { name: "MP9 | Starlight Protector", price: 4.0, rarity: "common", imageUrl: "../skins/mp9_starlight.jpg" },
+    { name: "FAMAS | Commemoration", price: 3.8, rarity: "common", imageUrl: "../skins/famas_commemoration.jpg" },
+    { name: "Galil AR | Chatterbox", price: 4.5, rarity: "common", imageUrl: "../skins/galil_chatterbox.jpg" },
+    { name: "AWP | Neo-Noir", price: 6.0, rarity: "epic", imageUrl: "../skins/awp_neonoir.jpg" },
+    { name: "M4A1-S | Hyper Beast", price: 6.5, rarity: "epic", imageUrl: "../skins/m4a1s_hyperbeast.jpg" },
+    { name: "AK-47 | Fire Serpent", price: 7.0, rarity: "epic", imageUrl: "../skins/ak47_fireserpent.jpg" },
+    { name: "Karambit | Doppler", price: 7.0, rarity: "epic", imageUrl: "../skins/karambit_doppler.jpg" },
+    { name: "AWP | Gungnir", price: 10.0, rarity: "rare", imageUrl: "../skins/awp_gungnir.jpg" }
+];
+
+
+            // Функция для отображения кубиков скинов
+            function displaySkins() {
+                const container = document.getElementById('skins-container');
+                container.innerHTML = '';
+                
+                skins.forEach(skin => {
+                    const skinDiv = document.createElement('div');
+                    skinDiv.classList.add('skin-cube');
+                    skinDiv.innerHTML = `
+                        <img src="${skin.imageUrl}" alt="${skin.name}" class="skin-image">
+                        <p class="skin-name">${skin.name}</p>
+                        <span class="skin-rarity ${skin.rarity}">${skin.rarity.toUpperCase()}</span>
+                    `;
+                    container.appendChild(skinDiv);
+                });
+            }
+
+            // Отображение скинов при загрузке страницы
+            displaySkins();
+
+            // Функция для открытия кейса
+            function rollCase() {
+                if (balance < 1) {
+                    alert(texts[lang].error);
+                    return;
+                }
+
+                // Снижение баланса
+                balance -= 1;
+                localStorage.setItem("balance", balance.toFixed(2));
+                document.getElementById("balance-value").textContent = balance.toFixed(2);
+
+                let roll = Math.random() * 100;
+                let selectedSkin;
+
+                if (roll < 90) {
+                    selectedSkin = skins.filter(s => s.rarity === "common")[Math.floor(Math.random() * 10)];
+                } else if (roll < 99) {
+                    selectedSkin = skins.filter(s => s.rarity === "epic")[Math.floor(Math.random() * 4)];
+                } else {
+                    selectedSkin = skins.filter(s => s.rarity === "rare")[0];
+                }
+
+                animateRoll(selectedSkin);
+            }
+
+            // Анимация прокрутки кейса (с сохранением скина)
+            function animateRoll(selectedSkin) {
+                const overlay = document.getElementById("roll-overlay");
+                const slot = document.getElementById("slot");
+                overlay.style.display = "flex";
+                slot.innerHTML = "";
+
+                let randomSkins = [];
+                for (let i = 0; i < 30; i++) {
+                    randomSkins.push(skins[Math.floor(Math.random() * skins.length)]);
+                }
+                randomSkins.push(selectedSkin);
+
+                randomSkins.forEach((skin, index) => {
+                    setTimeout(() => {
+                        slot.innerHTML = `
+                            <img src="${skin.imageUrl}" style="height:60px; margin-right:10px;">
+                            <div>
+                                <div>${skin.name}</div>
+                                <div style="color: ${getRarityColor(skin.rarity)}">${skin.rarity.toUpperCase()}</div>
+                            </div>
+                        `;
+                        if (index === randomSkins.length - 1) {
+                            setTimeout(() => {
+                                // ⚡️ СОХРАНЕНИЕ СКИНА В ИНВЕНТАРЬ ⚡️
+                                let inventory = JSON.parse(localStorage.getItem('inventory')) || [];
+                                inventory.push(selectedSkin);
+                                localStorage.setItem('inventory', JSON.stringify(inventory));
+                                
+                                alert(`${texts[lang].won} ${selectedSkin.name} (${selectedSkin.price.toFixed(2)} TON)`);
+                                overlay.style.display = "none";
+                            }, 1000);
+                        }
+                    }, 100 * index);
+                });
+            }
+
+            // Функция для получения цвета текста по рарности
+            function getRarityColor(rarity) {
+                switch (rarity) {
+                    case "common":
+                        return "#9e9e9e";
+                    case "epic":
+                        return "#ab47bc";
+                    case "rare":
+                        return "#ffd700";
+                    default:
+                        return "white";
+                }
+            }
+
+            // Открытие кейса при нажатии
+            document.getElementById("open-case").addEventListener("click", rollCase);
+
+            // Закрытие оверлея
+            document.getElementById("close-overlay").addEventListener("click", function() {
+                document.getElementById("roll-overlay").style.display = "none";
+            });
+
+            // Кнопка "Exit to Catalog"
+            document.getElementById("back-button").addEventListener("click", function() {
+                window.location.href = 'catalog.html';
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="notch">
+        <h2 id="title">CS2 CASE</h2>
+        <div class="balance-container">
+            <p id="balance-label" class="balance-label">Balance:</p>
+            <p id="balance-value" class="balance-value">0</p>
+        </div>
+        <select id="language-selector" class="language-selector">
+            <option value="en">🇺🇸</option>
+            <option value="ru">🇷🇺</option>
+        </select>
+    </div>
+    <div class="container">
+        <button id="back-button" class="exit-button">⮌ Exit to Catalog</button>
+        
+        <div class="case-container">
+            <img src="../image/m4a4all.png" alt="Case 1" class="case-image">
+            <button id="open-case" class="button">Open Case (1 TON)</button>
+            
+            <h3 id="drops-label">Possible drops:</h3>
+            <div id="skins-container" class="skins-grid"></div>
+        </div>
+    </div>
+
+    <div id="roll-overlay" class="overlay">
+        <div class="roll-box">
+            <h3 id="overlay-title">Opening case...</h3>
+            <div id="slot">Rolling...</div>
+            <button id="close-overlay" class="button">Close</button>
+        </div>
+    </div>
+</body>
+</html>
