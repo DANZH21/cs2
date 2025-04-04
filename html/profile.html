@@ -9,25 +9,33 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // Получаем данные пользователя из Telegram
             const tg = window.Telegram.WebApp;
+            tg.ready(); // Сообщаем Telegram, что WebApp готов
+
+            console.log("Telegram WebApp data:", tg.initDataUnsafe);
+
             const user = tg.initDataUnsafe.user;
             
-            // Обновляем данные профиля
             if (user) {
-                document.getElementById('username').textContent = user.username || `ID: ${user.id}`;
-                document.getElementById('user-id').textContent = `ID: ${user.id}`;
+                let displayName = user.username 
+                    ? `@${user.username}` 
+                    : `${user.first_name || "User"} ${user.last_name || ""}`.trim();
                 
-                // Аватар (если есть)
+                document.getElementById('username').textContent = displayName;
+                document.getElementById('user-id').textContent = `ID: ${user.id}`;
+
                 if (user.photo_url) {
                     document.getElementById('user-avatar').src = user.photo_url;
                 }
+            } else {
+                console.error("User data not found! Возможно, Mini App не запущен в Telegram.");
             }
 
-            // Остальной код (баланс, локализация)...
+            // Баланс из localStorage
             let balance = localStorage.getItem("balance") || "0";
             document.getElementById("balance").textContent = balance;
 
+            // Локализация
             const texts = {
                 en: {
                     title: "CS2 Case",
