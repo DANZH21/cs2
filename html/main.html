@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS2 Case</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            let balance = localStorage.getItem("balance") || "0";
+            document.getElementById("balance").textContent = balance;
+
+            // Тексты для перевода
+            const texts = {
+                en: {
+                    balanceLabel: 'Balance:',
+                    depositTon: 'Deposit ton',
+                    promoCode: 'Activate promo code',
+                    withdraw: 'Withdraw skins or ton',
+                    catalog: 'Catalog case',
+                    inventory: 'Inventory',
+                    upgradeSkin: 'Upgrade skin (SOON)',
+                    myProfile: 'My profile',
+                    connectWallet: 'Connect Ton wallet'
+                },
+                ru: {
+                    balanceLabel: 'Баланс:',
+                    depositTon: 'Пополнить тон',
+                    promoCode: 'Активировать промокод',
+                    withdraw: 'Вывести скины или тон',
+                    catalog: 'Каталог кейсов',
+                    inventory: 'Инвентарь',
+                    upgradeSkin: 'Улучшение скина (СКОРО)',
+                    myProfile: 'Мой профиль',
+                    connectWallet: 'Подключить Ton кошелек'
+                }
+            };
+
+            // Инициализация языка из localStorage
+            const languageSelector = document.getElementById('language-selector');
+            const savedLang = localStorage.getItem('lang') || 'en';
+            languageSelector.value = savedLang;
+            updateLanguage(savedLang);
+
+            // Слушатель для переключения языка
+            languageSelector.addEventListener('change', function() {
+                const lang = languageSelector.value;
+                localStorage.setItem('lang', lang); // Сохраняем язык
+                updateLanguage(lang);
+            });
+
+            function updateLanguage(lang) {
+                const currentTexts = texts[lang];
+                document.getElementById('balance-label').textContent = currentTexts.balanceLabel;
+                document.getElementById('deposit-ton').textContent = currentTexts.depositTon;
+                document.getElementById('promo-code').textContent = currentTexts.promoCode;
+                document.getElementById('withdraw').textContent = currentTexts.withdraw;
+                document.getElementById('catalog').textContent = currentTexts.catalog;
+                document.getElementById('inventory').textContent = currentTexts.inventory;
+                document.getElementById('upgrade-skin').textContent = currentTexts.upgradeSkin;
+                document.getElementById('my-profile').textContent = currentTexts.myProfile;
+                document.getElementById('connect-wallet').textContent = currentTexts.connectWallet;
+            }
+
+            // Добавление переходов по страницам
+            document.getElementById("deposit-ton").addEventListener("click", function() {
+                window.location.href = "deposit.html";
+            });
+
+            document.getElementById("promo-code").addEventListener("click", function() {
+                window.location.href = "promo.html";
+            });
+
+            document.getElementById("withdraw").addEventListener("click", function() {
+                window.location.href = "withdraw.html";
+            });
+
+            document.getElementById("catalog").addEventListener("click", function() {
+                window.location.href = "catalog.html";
+            });
+
+            document.getElementById("inventory").addEventListener("click", function() {
+                window.location.href = "inventory.html";
+            });
+
+            document.getElementById("upgrade-skin").addEventListener("click", function() {
+                window.location.href = "upgrade.html";
+            });
+
+            document.getElementById("my-profile").addEventListener("click", function() {
+                window.location.href = "profile.html";
+            });
+
+            document.getElementById("connect-wallet").addEventListener("click", function() {
+                window.location.href = "wallet.html";
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="notch">
+        <h2 id="case-title">CS2 CASE</h2>
+        <select id="language-selector" class="language-selector">
+            <option value="en">🇺🇸</option>
+            <option value="ru">🇷🇺</option>
+        </select>
+    </div>
+    <div class="balance-container">
+        <p id="balance-label">Balance:</p>
+        <p id="balance">0</p>
+    </div>
+    <div class="container">
+        <div class="grid">
+            <button class="button" id="deposit-ton">Deposit ton</button>
+            <button class="button" id="promo-code">Activate promo code</button>
+            <button class="button" id="withdraw">Withdraw skins or ton</button>
+            <button class="button" id="catalog">Catalog case</button>
+            <button class="button" id="inventory">Inventory</button>
+            <button class="button" id="upgrade-skin">Upgrade skin (SOON)</button>
+            <button class="button" id="my-profile">My profile</button>
+            <button class="button" id="connect-wallet">Connect Ton wallet</button>
+        </div>
+    </div>
+</body>
+</html>

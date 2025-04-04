@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Promo Code</title>
+    <link rel="stylesheet" href="../css/main.css">
+
+    <style>
+        /* Добавьте эти стили в main.css или прямо здесь */
+        .promo-container {
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 400px;
+            width: 90%;
+            margin: 30px auto 0;
+        }
+
+        .promo-input {
+            width: 100%;
+            padding: 12px;
+            background: #161825;
+            border: 2px solid #23263a;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            text-align: center;
+            box-sizing: border-box; /* Важное исправление */
+            transition: all 0.3s;
+        }
+
+        .promo-input:focus {
+            outline: none;
+            border-color: #575b7a;
+            transform: scale(1.02);
+        }
+
+        @media (max-width: 450px) {
+            .promo-input {
+                padding: 10px;
+                font-size: 14px;
+            }
+        }
+    </style>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Загрузка баланса
+            let balance = localStorage.getItem("balance") || "0";
+            document.getElementById("balance").textContent = balance;
+
+            // Локализация
+            const texts = {
+                en: {
+                    title: "CS2 CASES",
+                    inputPlaceholder: "Enter promo code",
+                    activate: "ACTIVATE",
+                    back: "⮌ Back to Menu",
+                    balanceLabel: "Balance:"
+                },
+                ru: {
+                    title: "CS2 CASES",
+                    inputPlaceholder: "Введите промокод",
+                    activate: "АКТИВИРОВАТЬ",
+                    back: "⮌ Назад в меню",
+                    balanceLabel: "Баланс:"
+                }
+            };
+
+            // Загрузка языка
+            const languageSelector = document.getElementById("language-selector");
+            const lang = localStorage.getItem("lang") || "en";
+            languageSelector.value = lang;
+            updateLanguage(lang);
+
+            // Обработчик переключения языка
+            languageSelector.addEventListener("change", function() {
+                const selectedLang = this.value;
+                localStorage.setItem("lang", selectedLang);
+                updateLanguage(selectedLang);
+            });
+
+            function updateLanguage(lang) {
+                document.getElementById("title").textContent = texts[lang].title;
+                document.getElementById("promo-input").placeholder = texts[lang].inputPlaceholder;
+                document.getElementById("activate-btn").textContent = texts[lang].activate;
+                document.getElementById("back-button").textContent = texts[lang].back;
+                document.getElementById("balance-label").textContent = texts[lang].balanceLabel;
+            }
+
+            // Заглушка для активации
+            document.getElementById("activate-btn").addEventListener("click", function() {
+                alert("Functionality in development 🛠️");
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="notch">
+        <h2 id="title">CS2 CASES</h2>
+        <div class="balance-container">
+            <p id="balance-label">Balance:</p>
+            <p id="balance">0</p>
+        </div>
+        <select id="language-selector" class="language-selector">
+            <option value="en">🇺🇸</option>
+            <option value="ru">🇷🇺</option>
+        </select>
+    </div>
+
+    <div class="container">
+        <button id="back-button" class="exit-button" onclick="window.location.href='main.html'">⮌ Back to Menu</button>
+        
+        <div class="promo-container">
+            <input 
+                type="text" 
+                id="promo-input"
+                class="promo-input"
+                placeholder="Enter promo code"
+            >
+            <button id="activate-btn" class="button">
+                ACTIVATE
+            </button>
+        </div>
+    </div>
+</body>
+</html>

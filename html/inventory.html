@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <style>
+        /* Стили остаются без изменений */
+        .inventory-container {
+            width: 100%;
+            max-width: 400px;
+            margin: 20px auto;
+        }
+        
+        .skins-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .skin-item {
+            background: #1a1c2c;
+            border-radius: 10px;
+            padding: 10px;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+        
+        .skin-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .skin-image {
+            width: 100%;
+            height: 120px;
+            object-fit: contain;
+            border-radius: 5px;
+        }
+        
+        .skin-info {
+            margin-top: 8px;
+        }
+        
+        .skin-name {
+            font-size: 14px;
+            color: white;
+            margin: 5px 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .skin-price {
+            font-size: 16px;
+            font-weight: bold;
+            color: #4caf50;
+        }
+        
+        .skin-rarity {
+            font-size: 12px;
+            padding: 3px 6px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-right: 5px;
+        }
+        
+        .common {
+            background-color: #616161;
+            color: white;
+        }
+        
+        .epic {
+            background-color: #7b1fa2;
+            color: white;
+        }
+        
+        .rare {
+            background: linear-gradient(135deg, #ffd700, #ffab00);
+            color: black;
+        }
+        
+        .sell-btn {
+            background: #ff4757;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            font-size: 12px;
+            cursor: pointer;
+            margin-top: 5px;
+            width: 100%;
+            transition: background 0.3s;
+        }
+        
+        .sell-btn:hover {
+            background: #ff6b81;
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            gap: 10px;
+        }
+        
+        .action-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 5px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        #sell-all-btn {
+            background: linear-gradient(135deg, #ff4757, #ff6b81);
+            color: white;
+        }
+        
+        #sell-all-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(255, 71, 87, 0.3);
+        }
+        
+        #back-btn {
+            background: #2962ff;
+            color: white;
+        }
+        
+        #back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(41, 98, 255, 0.3);
+        }
+        
+        .empty-inventory {
+            text-align: center;
+            padding: 40px 0;
+            color: #aaa;
+            font-size: 16px;
+        }
+        
+        @media (max-width: 500px) {
+            .skin-image {
+                height: 100px;
+            }
+            
+            .skin-name {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="notch">
+        <h2 id="title">INVENTORY</h2>
+        <div class="balance-container">
+            <p id="balance-label">Balance:</p>
+            <p id="balance">0</p>
+        </div>
+        <select id="language-selector" class="language-selector">
+            <option value="en">🇺🇸</option>
+            <option value="ru">🇷🇺</option>
+        </select>
+    </div>
+    
+    <div class="container">
+        <div class="inventory-container">
+            <div id="inventory-content">
+                <!-- Скины будут загружаться здесь -->
+            </div>
+            
+            <div class="action-buttons">
+                <button id="back-btn" class="action-btn">← Back</button>
+                <button id="sell-all-btn" class="action-btn">Sell All</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Обновленные тексты для локализации
+            const texts = {
+                en: {
+                    title: "CS2 Case",
+                    balanceLabel: "Balance:",
+                    backBtn: "← Back",
+                    sellAllBtn: "Sell All",
+                    emptyInventory: "Your inventory is empty",
+                    confirmSell: "Are you sure you want to sell all skins?",
+                    soldAll: "All skins sold for",
+                    soldSkin: "Sold for",
+                    sellBtn: "Sell", // Добавлен перевод для кнопки
+                    currency: "TON"
+                },
+                ru: {
+                    title: "CS2 Case",
+                    balanceLabel: "Баланс:",
+                    backBtn: "← Назад",
+                    sellAllBtn: "Продать все",
+                    emptyInventory: "Ваш инвентарь пуст",
+                    confirmSell: "Вы уверены, что хотите продать все скины?",
+                    soldAll: "Все скины проданы за",
+                    soldSkin: "Продано за",
+                    sellBtn: "Продать", // Добавлен перевод для кнопки
+                    currency: "TON"
+                }
+            };
+            
+            // Инициализация языка
+            const languageSelector = document.getElementById('language-selector');
+            let lang = localStorage.getItem('lang') || 'en';
+            languageSelector.value = lang;
+            
+            // Обновление интерфейса
+            function updateLanguage() {
+                document.getElementById('title').textContent = texts[lang].title;
+                document.getElementById('balance-label').textContent = texts[lang].balanceLabel;
+                document.getElementById('back-btn').textContent = texts[lang].backBtn;
+                document.getElementById('sell-all-btn').textContent = texts[lang].sellAllBtn;
+                document.querySelectorAll('.sell-btn').forEach(btn => {
+                    btn.textContent = texts[lang].sellBtn;
+                });
+            }
+
+            languageSelector.addEventListener('change', (e) => {
+                lang = e.target.value;
+                localStorage.setItem('lang', lang);
+                updateLanguage();
+            });
+            
+            // Загрузка данных
+            let balance = parseFloat(localStorage.getItem('balance')) || 0;
+            let inventory = JSON.parse(localStorage.getItem('inventory')) || [];
+            
+            // Отображение инвентаря
+            function displayInventory() {
+                const container = document.getElementById('inventory-content');
+                container.innerHTML = '';
+                
+                if (inventory.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-inventory">
+                            ${texts[lang].emptyInventory}
+                        </div>
+                    `;
+                    return;
+                }
+                
+                const grid = document.createElement('div');
+                grid.className = 'skins-grid';
+                
+                inventory.forEach((skin, index) => {
+                    const skinDiv = document.createElement('div');
+                    skinDiv.className = 'skin-item';
+                    skinDiv.innerHTML = `
+                        <img src="${skin.imageUrl}" class="skin-image" alt="${skin.name}">
+                        <div class="skin-info">
+                            <span class="skin-rarity ${skin.rarity}">${skin.rarity.toUpperCase()}</span>
+                            <p class="skin-name">${skin.name}</p>
+                            <p class="skin-price">${skin.price.toFixed(2)} ${texts[lang].currency}</p>
+                            <button class="sell-btn" data-index="${index}">${texts[lang].sellBtn}</button>
+                        </div>
+                    `;
+                    grid.appendChild(skinDiv);
+                });
+                
+                container.appendChild(grid);
+                
+                // Добавляем обработчики продажи
+                document.querySelectorAll('.sell-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const index = parseInt(this.dataset.index);
+                        sellSkin(index);
+                    });
+                });
+            }
+            
+            // Функция продажи скина
+            function sellSkin(index) {
+                const skin = inventory[index];
+                balance += skin.price;
+                inventory.splice(index, 1);
+                
+                localStorage.setItem('balance', balance.toFixed(2));
+                localStorage.setItem('inventory', JSON.stringify(inventory));
+                
+                document.getElementById('balance').textContent = balance.toFixed(2);
+                displayInventory();
+                alert(`${texts[lang].soldSkin} ${skin.price.toFixed(2)} ${texts[lang].currency}`);
+            }
+            
+            // Продажа всех скинов
+            function sellAllSkins() {
+                if (!inventory.length) return;
+                if (!confirm(texts[lang].confirmSell)) return;
+                
+                const total = inventory.reduce((sum, skin) => sum + skin.price, 0);
+                balance += total;
+                inventory = [];
+                
+                localStorage.setItem('balance', balance.toFixed(2));
+                localStorage.setItem('inventory', JSON.stringify(inventory));
+                
+                document.getElementById('balance').textContent = balance.toFixed(2);
+                displayInventory();
+                alert(`${texts[lang].soldAll} ${total.toFixed(2)} ${texts[lang].currency}`);
+            }
+            
+            // Инициализация
+            document.getElementById('balance').textContent = balance.toFixed(2);
+            document.getElementById('back-btn').addEventListener('click', () => {
+                window.location.href = 'main.html';
+            });
+            document.getElementById('sell-all-btn').addEventListener('click', sellAllSkins);
+            
+            updateLanguage();
+            displayInventory();
+        });
+    </script>
+</body>
+</html>

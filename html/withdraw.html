@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Withdraw</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <style>
+        /* Стили для переключателей */
+        .tab-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .tab-button {
+            flex: 1;
+            padding: 15px;
+            background: #23263a;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .tab-button.active {
+            background: #575b7a;
+        }
+
+        /* Стили форм */
+        .withdraw-form {
+            display: none;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .withdraw-form.active {
+            display: flex;
+        }
+
+        .withdraw-input {
+            width: 100%;
+            padding: 12px;
+            background: #161825;
+            border: 2px solid #23263a;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Локализация
+            const texts = {
+                en: {
+                    title: "WITHDRAW",
+                    skinsTab: "Skins",
+                    tonTab: "TON",
+                    steamPlaceholder: "Steam Trade URL",
+                    amountPlaceholder: "Amount (TON)",
+                    addressPlaceholder: "Wallet Address",
+                    withdrawButton: "WITHDRAW",
+                    back: "⮌ Back to Menu",
+                    balanceLabel: "Balance:"
+                },
+                ru: {
+                    title: "ВЫВОД",
+                    skinsTab: "Скины",
+                    tonTab: "TON",
+                    steamPlaceholder: "Steam Trade URL",
+                    amountPlaceholder: "Сумма (TON)",
+                    addressPlaceholder: "Адрес кошелька",
+                    withdrawButton: "ВЫВЕСТИ",
+                    back: "⮌ Назад в меню",
+                    balanceLabel: "Баланс:"
+                }
+            };
+
+            // Инициализация
+            const lang = localStorage.getItem("lang") || "en";
+            const balance = localStorage.getItem("balance") || "0";
+            document.getElementById("balance").textContent = balance;
+            initTabs();
+            updateLanguage(lang);
+
+            // Переключение вкладок
+            function initTabs() {
+                document.querySelectorAll(".tab-button").forEach(btn => {
+                    btn.addEventListener("click", () => {
+                        document.querySelectorAll(".tab-button").forEach(b => b.classList.remove("active"));
+                        document.querySelectorAll(".withdraw-form").forEach(f => f.classList.remove("active"));
+                        btn.classList.add("active");
+                        document.getElementById(btn.dataset.target).classList.add("active");
+                    });
+                });
+            }
+
+            // Локализация
+            function updateLanguage(lang) {
+                document.getElementById("title").textContent = texts[lang].title;
+                document.getElementById("skins-tab").textContent = texts[lang].skinsTab;
+                document.getElementById("ton-tab").textContent = texts[lang].tonTab;
+                document.getElementById("steam-input").placeholder = texts[lang].steamPlaceholder;
+                document.getElementById("amount-input").placeholder = texts[lang].amountPlaceholder;
+                document.getElementById("address-input").placeholder = texts[lang].addressPlaceholder;
+                document.getElementById("withdraw-btn").textContent = texts[lang].withdrawButton;
+                document.getElementById("back-button").textContent = texts[lang].back;
+                document.getElementById("balance-label").textContent = texts[lang].balanceLabel;
+            }
+
+            // Заглушка для вывода
+            document.getElementById("withdraw-btn").addEventListener("click", function() {
+                alert("Withdrawal functionality in development 🛠️");
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="notch">
+        <h2 id="title">CS2 Case</h2>
+        <div class="balance-container">
+            <p id="balance-label">Balance:</p>
+            <p id="balance">0</p>
+        </div>
+        <select id="language-selector" class="language-selector">
+            <option value="en">🇺🇸</option>
+            <option value="ru">🇷🇺</option>
+        </select>
+    </div>
+
+    <div class="container">
+        <button id="back-button" class="exit-button" onclick="window.location.href='main.html'">⮌ Back to Menu</button>
+        
+        <div class="tab-buttons">
+            <button 
+                class="tab-button active" 
+                id="skins-tab"
+                data-target="skins-form"
+            >
+                Skins
+            </button>
+            <button 
+                class="tab-button" 
+                id="ton-tab"
+                data-target="ton-form"
+            >
+                TON
+            </button>
+        </div>
+
+        <!-- Форма для скинов -->
+        <form class="withdraw-form active" id="skins-form">
+            <input 
+                type="text" 
+                id="steam-input"
+                class="withdraw-input"
+                placeholder="Steam Trade URL"
+            >
+        </form>
+
+        <!-- Форма для TON -->
+        <form class="withdraw-form" id="ton-form">
+            <input 
+                type="number" 
+                id="amount-input"
+                class="withdraw-input"
+                placeholder="Amount (TON)"
+                min="0"
+                step="0.01"
+            >
+            <input 
+                type="text" 
+                id="address-input"
+                class="withdraw-input"
+                placeholder="Wallet Address"
+            >
+        </form>
+
+        <button id="withdraw-btn" class="button">
+            WITHDRAW
+        </button>
+    </div>
+</body>
+</html>

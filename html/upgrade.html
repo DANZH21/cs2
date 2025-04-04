@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fast Money</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <style>
+        /* Основные стили как в проекте */
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: calc(100vh - 60px);
+            padding: 20px;
+        }
+        
+        .money-container {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .balance-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #4caf50;
+            margin: 10px 0;
+        }
+        
+        #earn-btn {
+            background: #2962ff;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+        
+        #earn-btn:hover {
+            background: #1e88e5;
+            transform: scale(1.05);
+        }
+        
+        #earn-btn:active {
+            transform: scale(0.98);
+        }
+        
+        .exit-button {
+            background: #1a1c2c;
+            color: white;
+            border: 2px solid #2962ff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .exit-button:hover {
+            background: #2962ff;
+        }
+    </style>
+</head>
+<body>
+    <div class="notch">
+        <h2>FAST MONEY</h2>
+        <div class="balance-container">
+            <p class="balance-label">Balance:</p>
+            <p id="balance-value" class="balance-value">0</p>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="money-container">
+            <h3>Click to earn money</h3>
+            <div class="balance-value" id="current-balance">0 TON</div>
+            <button id="earn-btn">+1 TON</button>
+        </div>
+        
+        <button class="exit-button" id="exit-btn">⮌ Back to Menu</button>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Загружаем основной баланс из localStorage
+            let balance = parseFloat(localStorage.getItem('balance')) || 0;
+            document.getElementById('balance-value').textContent = balance.toFixed(2);
+            document.getElementById('current-balance').textContent = balance.toFixed(2) + ' TON';
+            
+            // Обработчик кнопки заработка
+            document.getElementById('earn-btn').addEventListener('click', function() {
+                balance += 1;
+                document.getElementById('balance-value').textContent = balance.toFixed(2);
+                document.getElementById('current-balance').textContent = balance.toFixed(2) + ' TON';
+                localStorage.setItem('balance', balance.toFixed(2));
+                
+                // Анимация
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 100);
+            });
+            
+            // Кнопка выхода в меню
+            document.getElementById('exit-btn').addEventListener('click', function() {
+                window.location.href = 'main.html'; // Или другой ваш файл меню
+            });
+        });
+    </script>
+</body>
+</html>

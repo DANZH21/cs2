@@ -1,0 +1,490 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 40px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    width: 90%;
+    max-width: 400px;
+}
+
+.case-block {
+    background: #1a1c2c;
+    padding: 15px; /* Уменьшил padding для компактности */
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(255, 255, 255, 0.1);
+    transition: background-color 0.3s ease, transform 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+.case-block:hover {
+    background-color: #23263a;
+    transform: scale(1.03);
+}
+
+.case-image {
+    max-width: 60%; /* Уменьшил изображение кейса */
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
+
+.best-case {
+    font-size: 18px; /* Чуть уменьшил */
+    font-weight: bold;
+    color: white;
+    text-decoration: none;
+    display: block;
+    margin-top: 5px;
+}
+
+.case-desc {
+    font-size: 12px;
+    color: #aaa;
+    margin-top: 2px;
+}
+
+.small-cases {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.small-case {
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    text-decoration: none;
+    display: block;
+    margin-top: 8px;
+}
+
+.back-button {
+    font-size: 16px;
+    color: #007bff;
+    text-decoration: none;
+    padding: 10px;
+    border: 1px solid #007bff;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.back-button:hover {
+    background-color: #007bff;
+    color: white;
+}
+.notch {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 15px;
+}
+
+.exit-button {
+    background: #23263a;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease-in-out;
+}
+
+.exit-button:hover {
+    background: #2d3048;
+    transform: scale(1.05);
+}
+body {
+    background-color: #0f111a;
+    color: white;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+}
+
+.notch {
+    width: 100%;
+    max-width: 400px;
+    height: 60px;
+    background: #1a1c2c;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    box-shadow: 0 2px 10px rgba(255, 255, 255, 0.1);
+    box-sizing: border-box;
+}
+
+.notch h2, .notch p {
+    margin: 0;
+    font-size: 16px;
+    white-space: nowrap;
+}
+
+.balance-container {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 10px;
+    font-size: 16px;
+    color: white;
+    text-align: center;
+}
+
+.container {
+    width: 90%;
+    max-width: 400px;
+    background: #1a1c2c;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+    text-align: center;
+    margin-top: 40px;
+}
+
+.button {
+    background: #161825;
+    color: white;
+    padding: 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 100px;
+    transition: background 0.3s;
+}
+
+.button:hover {
+    background: #23263a;
+}
+
+#roll-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.roll-box {
+    background: #222;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.case-results ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 10px;
+    text-align: left;
+    font-size: 14px;
+}
+
+.case-results li {
+    margin: 5px 0;
+}
+
+@media (max-width: 450px) {
+    .notch {
+        height: 50px;
+        font-size: 14px;
+        padding: 0 15px;
+    }
+
+    .container {
+        width: 95%;
+        padding: 10px;
+        margin-top: 30px;
+    }
+
+    .button {
+        font-size: 18px;
+        min-height: 90px;
+        padding: 15px;
+    }
+}
+/* Стиль для контейнера кубиков */
+.cube-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Два кубика в строке */
+    gap: 20px;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.skin-cube {
+    background: #1a1c2c;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(255, 255, 255, 0.1);
+    transition: background-color 0.3s ease, transform 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+.skin-cube:hover {
+    background-color: #23263a;
+    transform: scale(1.03);
+}
+
+.skin-cube-image {
+    width: 80%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
+
+.skin-cube-name {
+    font-size: 14px;
+    color: white;
+    font-weight: bold;
+}
+
+.button {
+    background: #161825;
+    color: white;
+    padding: 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 100px;
+    transition: background 0.3s;
+}
+
+.button:hover {
+    background: #23263a;
+}
+
+#exit-button {
+    background: #161825;
+    color: white;
+    padding: 15px 25px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px; /* Отступ сверху, чтобы кнопка была выше кейса */
+    width: 100%; /* Ширина кнопки по всей ширине контейнера */
+    text-align: center;
+}
+
+#lang-switch {
+    background: #23263a;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+.skins-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.skin-cube {
+    background: #23263a;
+    padding: 10px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(255, 255, 255, 0.1);
+}
+
+.skin-cube .skin-name {
+    color: white;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.skin-cube .skin-image {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+/* Основной стиль для контейнера скинов */
+.skins-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Два скина в строке */
+    gap: 15px;
+    margin-top: 20px;
+}
+
+/* Стиль для каждого блока скина */
+.skin-block {
+    background: #1a1c2c;
+    padding: 10px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(255, 255, 255, 0.1);
+}
+
+.skin-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.skin-name {
+    font-size: 14px;
+    font-weight: bold;
+    color: #fff;
+}
+
+@media (max-width: 450px) {
+    .skins-container {
+        grid-template-columns: 1fr; /* Один скин в строке для маленьких экранов */
+    }
+}
+/* Deposit Page Specific Styles */
+.deposit-section {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    width: 100%;
+}
+
+.wallet-info {
+    text-align: center;
+    background: #161825;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.address-box {
+    background: #23263a;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 10px;
+    word-break: break-all;
+    font-family: monospace;
+}
+
+.input-group {
+    display: flex;
+    gap: 10px;
+}
+
+#amount-input {
+    flex: 1;
+    padding: 12px;
+    background: #161825;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-size: 16px;
+}
+
+.qr-section {
+    text-align: center;
+    background: #161825;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.qr-code {
+    width: 200px;
+    height: 200px;
+    margin: 15px auto;
+    background: white;
+    padding: 10px;
+}
+
+/* Profile Page Specific Styles */
+.profile-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.profile-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #2962ff;
+}
+
+.profile-info {
+    background: #161825;
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 20px;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    margin: 15px 0;
+    font-size: 16px;
+}
+
+.value {
+    color: #2962ff;
+    font-weight: bold;
+}
+
+/* Common Button Styles */
+.button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 15px;
+    font-size: 16px;
+}
+
+.sticker {
+    width: 24px;
+    height: 24px;
+}
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.profile-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #fff;
+}
+
+.user-id {
+    color: #888;
+    font-size: 0.9em;
+    margin-top: 5px;
+}

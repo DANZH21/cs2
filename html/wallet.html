@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wallet</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <script src="https://cdn.jsdelivr.net/npm/@tonconnect/sdk@latest/dist/tonconnect-sdk.min.js"></script>
+    <style>
+        /* Дополнительные стили для страницы кошелька */
+        .wallet-status {
+            background: #1a1c2c;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .wallet-address {
+            background: #161825;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            word-break: break-all;
+            font-family: monospace;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .wallet-address:hover::after {
+            content: 'Copy';
+            position: absolute;
+            right: 10px;
+            background: #2962ff;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        #connect-btn {
+            background: #2962ff;
+        }
+
+        #disconnect-btn {
+            background: #ff4757;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="notch">
+        <h2 id="title">WALLET</h2>
+        <div class="balance-container">
+            <p id="balance-label">Balance:</p>
+            <p id="balance">0</p>
+        </div>
+        <select id="language-selector" class="language-selector">
+            <option value="en">🇺🇸</option>
+            <option value="ru">🇷🇺</option>
+        </select>
+    </div>
+    
+    <div class="container">
+        <button class="exit-button" onclick="window.location.href='main.html'">⮌ Exit to Menu</button>
+        
+        <div class="wallet-status">
+            <h3 id="wallet-status-title">Wallet not connected</h3>
+            <div id="wallet-address" class="hidden wallet-address"></div>
+        </div>
+
+        <div class="action-buttons">
+            <button id="connect-btn" class="button">Connect TON Wallet</button>
+            <button id="disconnect-btn" class="button hidden">Disconnect</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Инициализация TON Connect
+            const connector = new TonConnect.TonConnect({
+                manifestUrl: 'https://your-site.com/tonconnect-manifest.json'
+            });
+
+            // Локализация
+            const texts = {
+                en: {
+                    title: "CS2 Case",
+                    balanceLabel: "Balance:",
+                    connected: "Wallet connected",
+                    notConnected: "Wallet not connected",
+                    connect: "Connect TON Wallet",
+                    disconnect: "Disconnect",
+                    copyAlert: "Address copied!"
+                },
+                ru: {
+                    title: "CS2 Case",
+                    balanceLabel: "Баланс:",
+                    connected: "Кошелек подключен",
+                    notConnected: "Кошелек не подключен",
+                    connect: "Подключить TON кошелек",
+                    disconnect: "Отключить",
+                    copyAlert: "Адрес скопирован!"
+                }
+            };
+
+            // Состояние приложения
+            let lang = localStorage.getItem('lang') || 'en';
+            let balance = localStorage.getItem('balance') || "0";
+
+            // Элементы интерфейса
+            const elements = {
+                title: document.getElementById('title'),
+                balanceLabel: document.getElementById('balance-label'),
+                balance: document.getElementById('balance'),
+                walletStatus: document.getElementById('wallet-status-title'),
+                walletAddress: document.getElementById('wallet-address'),
+                connectBtn: document.getElementById('connect-btn'),
+                disconnectBtn: document.getElementById('disconnect-btn'),
+                langSelector: document.getElementById('language-selector')
+            };
+
+            // Обновление интерфейса
+            function updateUI() {
+                // Обновление баланса
+                elements.balance.textContent = balance;
+                
+                // Локализация
+                elements.title.textContent = texts[lang].title;
+                elements.balanceLabel.textContent = texts[lang].balanceLabel;
+                elements.connectBtn.textContent = texts[lang].connect;
+                elements.disconnectBtn.textContent = texts[lang].disconnect;
+
+                // Состояние кошелька
+                if (connector.connected) {
+                    elements.walletStatus.textContent = texts[lang].connected;
+                    elements.walletAddress.textContent = connector.account.address;
+                    elements.walletAddress.classList.remove('hidden');
+                    elements.disconnectBtn.classList.remove('hidden');
+                    elements.connectBtn.classList.add('hidden');
+                } else {
+                    elements.walletStatus.textContent = texts[lang].notConnected;
+                    elements.walletAddress.classList.add('hidden');
+                    elements.disconnectBtn.classList.add('hidden');
+                    elements.connectBtn.classList.remove('hidden');
+                }
+            }
+
+            // Обработчики событий
+            elements.connectBtn.addEventListener('click', async () => {
+                const wallets = await connector.getWallets();
+                if (wallets.length > 0) {
+                    await connector.connect({ jsBridgeKey: wallets[0].jsBridgeKey });
+                    connector.onStatusChange(updateUI);
+                }
+            });
+
+            elements.disconnectBtn.addEventListener('click', async () => {
+                await connector.disconnect();
+                updateUI();
+            });
+
+            elements.langSelector.addEventListener('change', (e) => {
+                lang = e.target.value;
+                localStorage.setItem('lang', lang);
+                updateUI();
+            });
+
+            elements.walletAddress.addEventListener('click', function() {
+                if (connector.connected) {
+                    navigator.clipboard.writeText(connector.account.address);
+                    alert(texts[lang].copyAlert);
+                }
+            });
+
+            // Инициализация
+            elements.langSelector.value = lang;
+            updateUI();
+        });
+    </script>
+</body>
+</html>

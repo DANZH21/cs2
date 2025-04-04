@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deposit TON</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/case.css">
+    <style>
+        .deposit-section {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            width: 100%;
+        }
+
+        .wallet-info {
+            text-align: center;
+            background: #161825;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .address-box {
+            background: #23263a;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            word-break: break-all;
+            font-family: monospace;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .address-box:hover::after {
+            content: 'Copy';
+            position: absolute;
+            right: 10px;
+            background: #2962ff;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        #amount-input {
+            flex: 1;
+            padding: 12px;
+            background: #161825;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+        }
+
+        .qr-section {
+            text-align: center;
+            background: #161825;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .qr-code {
+            width: 200px;
+            height: 200px;
+            margin: 15px auto;
+            background: white;
+            padding: 10px;
+        }
+
+        .memo-section {
+            background: #161825;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .memo-label {
+            font-size: 14px;
+            color: #aaa;
+            margin-bottom: 5px;
+        }
+
+        .memo-value {
+            font-family: monospace;
+            word-break: break-all;
+            color: #4caf50; /* Зеленый цвет для ID */
+        }
+
+        .memo-error {
+            color: #ff4757; /* Красный цвет для ошибки */
+            font-style: italic;
+        }
+    </style>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Инициализация Telegram WebApp
+            const tg = window.Telegram.WebApp;
+            tg.expand(); // Раскрываем приложение на весь экран
+            
+            // Получаем user_id из Telegram
+            const userId = tg.initDataUnsafe.user?.id;
+            const memoContainer = document.getElementById("memo-value");
+            
+            // Устанавливаем адрес кошелька
+            const walletAddress = "UQBwpx78QFjSxoNDzksZT4DHbEHnGFg8Gbgw9SjYY_bP9M3R";
+            document.getElementById("wallet-address").textContent = walletAddress;
+            
+            // Отображаем только ID или сообщение об ошибке
+            if (userId) {
+                memoContainer.textContent = userId;
+                memoContainer.className = "memo-value";
+            } else {
+                memoContainer.textContent = "Telegram ID для memo не найден";
+                memoContainer.className = "memo-error";
+            }
+            
+            // Копирование адреса при клике
+            document.getElementById("wallet-address").addEventListener("click", function() {
+                navigator.clipboard.writeText(walletAddress).then(() => {
+                    alert("Wallet address copied!");
+                });
+            });
+
+            // Копирование ID при клике (если доступен)
+            if (userId) {
+                memoContainer.addEventListener("click", function() {
+                    navigator.clipboard.writeText(userId).then(() => {
+                        alert("User ID copied!");
+                    });
+                });
+            }
+
+            let balance = localStorage.getItem("balance") || "0";
+            document.getElementById("balance").textContent = balance;
+
+            const texts = {
+                en: {
+                    title: "CS2 Case",
+                    walletTitle: "Your TON Wallet",
+                    scanText: "Scan QR code to deposit",
+                    confirm: "Confirm",
+                    back: "⮌ Exit to Menu",
+                    balanceLabel: "Balance:",
+                    memoLabel: "Your Telegram ID (required for deposit):",
+                    copyAlert: "Copied!",
+                    amountPlaceholder: "Amount",
+                    idNotFound: "Telegram ID for memo not found"
+                },
+                ru: {
+                    title: "CS2 Case",
+                    walletTitle: "Ваш TON кошелек",
+                    scanText: "Сканируйте QR-код",
+                    confirm: "Подтвердить",
+                    back: "⮌ Назад в меню",
+                    balanceLabel: "Баланс:",
+                    memoLabel: "Ваш Telegram ID (обязательно для депозита):",
+                    copyAlert: "Скопировано!",
+                    amountPlaceholder: "Сумма",
+                    idNotFound: "Telegram ID для memo не найден"
+                }
+            };
+
+            const languageSelector = document.getElementById("language-selector");
+            const lang = localStorage.getItem("lang") || "en";
+            languageSelector.value = lang;
+            updateLanguage(lang);
+
+            languageSelector.addEventListener("change", function() {
+                const selectedLang = languageSelector.value;
+                localStorage.setItem("lang", selectedLang);
+                updateLanguage(selectedLang);
+            });
+
+            function updateLanguage(lang) {
+                document.getElementById("title").textContent = texts[lang].title;
+                document.getElementById("wallet-title").textContent = texts[lang].walletTitle;
+                document.getElementById("scan-text").textContent = texts[lang].scanText;
+                document.getElementById("confirm-deposit").textContent = texts[lang].confirm;
+                document.getElementById("back-button").textContent = texts[lang].back;
+                document.getElementById("balance-label").textContent = texts[lang].balanceLabel;
+                document.getElementById("memo-label").textContent = texts[lang].memoLabel;
+                document.getElementById("amount-input").placeholder = texts[lang].amountPlaceholder;
+                
+                // Обновляем текст ошибки, если ID не найден
+                if (!userId) {
+                    document.getElementById("memo-value").textContent = texts[lang].idNotFound;
+                }
+            }
+
+            // Генерация QR-кода с адресом и memo (если ID доступен)
+            function generateQR() {
+                let qrData = `ton://transfer/${walletAddress}`;
+                if (userId) {
+                    qrData += `?text=${userId}`;
+                }
+                
+                const qrCode = document.getElementById("qr-code");
+                qrCode.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrData)}`;
+            }
+            
+            generateQR();
+        });
+    </script>
+</head>
+<body>
+    <div class="notch">
+        <h2 id="title">DEPOSIT TON</h2>
+        <div class="balance-container">
+            <p id="balance-label">Balance:
+                
+            </p>
+            <p id="balance">0</p>
+        </div>
+        <select id="language-selector" class="language-selector">
+            <option value="en">🇺🇸</option>
+            <option value="ru">🇷🇺</option>
+        </select>
+    </div>
+    
+    <div class="container">
+        <button id="back-button" class="exit-button" onclick="window.location.href='main.html'">⮌ Exit to Menu</button>
+        
+        <div class="deposit-section">
+            <div class="wallet-info">
+                <img src="../icons/wallet.svg" alt="wallet" class="sticker">
+                <h3 id="wallet-title">Your TON Wallet</h3>
+                <div class="address-box" id="wallet-address">
+                    Loading...
+                </div>
+            </div>
+            
+            <div class="memo-section">
+                <div class="memo-label" id="memo-label">Your Telegram ID (required for deposit):</div>
+                <div id="memo-value">Loading...</div>
+            </div>
+            
+            <div class="input-group">
+                <input type="number" placeholder="Amount" id="amount-input">
+                <button class="button" id="confirm-deposit">Confirm</button>
+            </div>
+            
+            <div class="qr-section">
+                <img id="qr-code" alt="qr-code" class="qr-code">
+                <p id="scan-text">Scan QR code to deposit</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,80 @@
+.wallet-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+}
+
+.wallet-status {
+    background: #1a1c2c;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.wallet-address {
+    background: #161825;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 10px;
+    word-break: break-all;
+    font-family: monospace;
+    cursor: pointer;
+    position: relative;
+}
+
+.wallet-address:hover::after {
+    content: 'Copy';
+    position: absolute;
+    right: 10px;
+    background: #2962ff;
+    padding: 2px 5px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.action-btn {
+    padding: 15px;
+    border-radius: 8px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+#connect-btn {
+    background: #2962ff;
+    color: white;
+}
+
+#connect-btn:hover {
+    background: #1a56e0;
+}
+
+#test-deposit-btn {
+    background: #4caf50;
+    color: white;
+}
+
+#test-deposit-btn:hover {
+    background: #3d8b40;
+}
+
+#disconnect-btn {
+    background: #ff4757;
+    color: white;
+}
+
+#disconnect-btn:hover {
+    background: #e03e4c;
+}
+
+.hidden {
+    display: none;
+}

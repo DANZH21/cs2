@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/case.css">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Получаем данные пользователя из Telegram
+            const tg = window.Telegram.WebApp;
+            const user = tg.initDataUnsafe.user;
+            
+            // Обновляем данные профиля
+            if (user) {
+                document.getElementById('username').textContent = user.username || `ID: ${user.id}`;
+                document.getElementById('user-id').textContent = `ID: ${user.id}`;
+                
+                // Аватар (если есть)
+                if (user.photo_url) {
+                    document.getElementById('user-avatar').src = user.photo_url;
+                }
+            }
+
+            // Остальной код (баланс, локализация)...
+            let balance = localStorage.getItem("balance") || "0";
+            document.getElementById("balance").textContent = balance;
+
+            const texts = {
+                en: {
+                    title: "CS2 Case",
+                    deposited: "Total deposited:",
+                    cases: "Cases opened:",
+                    registered: "Registered:",
+                    walletStatus: "Connected",
+                    back: "⮌ Exit to Menu",
+                    balanceLabel: "Balance: "
+                },
+                ru: {
+                    title: "CS2 Case",
+                    deposited: "Всего пополнено:",
+                    cases: "Открыто кейсов:",
+                    registered: "Дата регистрации:",
+                    walletStatus: "Подключен",
+                    back: "⮌ Назад в меню",
+                    balanceLabel: "Баланс: "
+                }
+            };
+
+            const languageSelector = document.getElementById("language-selector");
+            const lang = localStorage.getItem("lang") || "en";
+            languageSelector.value = lang;
+            updateLanguage(lang);
+
+            languageSelector.addEventListener("change", function() {
+                const selectedLang = languageSelector.value;
+                localStorage.setItem("lang", selectedLang);
+                updateLanguage(selectedLang);
+            });
+
+            function updateLanguage(lang) {
+                document.getElementById("title").textContent = texts[lang].title;
+                document.getElementById("total-deposits").textContent = texts[lang].deposited;
+                document.getElementById("cases-opened").textContent = texts[lang].cases;
+                document.getElementById("registration-date").textContent = texts[lang].registered;
+                document.getElementById("wallet-status").textContent = texts[lang].walletStatus;
+                document.getElementById("back-button").textContent = texts[lang].back;
+                document.getElementById("balance-label").textContent = texts[lang].balanceLabel;
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="notch">
+        <h2 id="title">MY PROFILE</h2>
+        <div class="balance-container">
+            <p id="balance-label">Balance:</p>
+            <p id="balance">0</p>
+        </div>
+        <select id="language-selector" class="language-selector">
+            <option value="en">🇺🇸</option>
+            <option value="ru">🇷🇺</option>
+        </select>
+    </div>
+
+    <div class="container">
+        <button id="back-button" class="exit-button" onclick="window.location.href='main.html'">⮌ Exit to Menu</button>
+        
+        <div class="profile-header">
+            <img id="user-avatar" src="../avatar.png" class="profile-avatar">
+            <div>
+                <h3 id="username">Loading...</h3>
+                <p id="user-id" class="user-id"></p>
+            </div>
+        </div>
+
+        <div class="profile-info">
+            <div class="info-item">
+                <span id="total-deposits">Total deposited:</span>
+                <span class="value">500 TON</span>
+            </div>
+            
+            <div class="info-item">
+                <span id="cases-opened">Cases opened:</span>
+                <span class="value">34</span>
+            </div>
+            
+            <div class="info-item">
+                <span id="registration-date">Registered:</span>
+                <span class="value">2023-01-15</span>
+            </div>
+        </div>
+
+        <button class="button" id="connect-wallet" style="margin-top: 20px;">
+            <img src="../icons/wallet.svg" class="sticker">
+            <span id="wallet-status">Connected</span>
+        </button>
+    </div>
+</body>
+</html>
