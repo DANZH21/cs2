@@ -7,27 +7,26 @@
     <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="../css/case.css">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="../js/stars.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"> 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
+            // Получаем данные пользователя из Telegram
             const tg = window.Telegram.WebApp;
             const user = tg.initDataUnsafe.user;
-
+            
+            // Обновляем данные профиля
             if (user) {
                 document.getElementById('username').textContent = user.username || `ID: ${user.id}`;
                 document.getElementById('user-id').textContent = `ID: ${user.id}`;
                 
+                // Аватар (если есть)
                 if (user.photo_url) {
                     document.getElementById('user-avatar').src = user.photo_url;
-                } else {
-                    console.warn("Аватар пользователя не найден, используется дефолтный.");
-                    document.getElementById('user-avatar').src = "../avatar.png";
                 }
-            } else {
-                console.error("Ошибка получения данных пользователя из Telegram SDK");
-                document.getElementById('username').textContent = "Ошибка получения данных";
-                document.getElementById('user-id').textContent = "Попробуйте перезапустить";
             }
 
+            // Остальной код (баланс, локализация)...
             let balance = localStorage.getItem("balance") || "0";
             document.getElementById("balance").textContent = balance;
 
@@ -65,8 +64,12 @@
 
             function updateLanguage(lang) {
                 document.getElementById("title").textContent = texts[lang].title;
-                document.getElementById("balance-label").textContent = texts[lang].balanceLabel;
+                document.getElementById("total-deposits").textContent = texts[lang].deposited;
+                document.getElementById("cases-opened").textContent = texts[lang].cases;
+                document.getElementById("registration-date").textContent = texts[lang].registered;
+                document.getElementById("wallet-status").textContent = texts[lang].walletStatus;
                 document.getElementById("back-button").textContent = texts[lang].back;
+                document.getElementById("balance-label").textContent = texts[lang].balanceLabel;
             }
         });
     </script>
@@ -94,6 +97,28 @@
                 <p id="user-id" class="user-id"></p>
             </div>
         </div>
+
+        <div class="profile-info">
+            <div class="info-item">
+                <span id="total-deposits">Total deposited:</span>
+                <span class="value">500 TON</span>
+            </div>
+            
+            <div class="info-item">
+                <span id="cases-opened">Cases opened:</span>
+                <span class="value">34</span>
+            </div>
+            
+            <div class="info-item">
+                <span id="registration-date">Registered:</span>
+                <span class="value">2023-01-15</span>
+            </div>
+        </div>
+
+        <button class="button" id="connect-wallet" style="margin-top: 20px;">
+            <img src="../icons/wallet.svg" class="sticker">
+            <span id="wallet-status">Connected</span>
+        </button>
     </div>
 </body>
 </html>
