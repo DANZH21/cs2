@@ -7,7 +7,32 @@ body {
     align-items: center;
     padding: 0;
     margin: 0;
+    position: relative;
 }
+
+/* Звёздный фон */
+.star {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: white;
+    border-radius: 50%;
+    opacity: 0.8;
+    animation: rise 3s linear infinite;
+}
+
+@keyframes rise {
+    0% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-100vh);
+        opacity: 0;
+    }
+}
+
+/* Стили для всех элементов ниже – без изменений */
 
 .notch {
     width: 100%;
@@ -22,6 +47,7 @@ body {
     padding: 0 20px;
     box-shadow: 0 2px 10px rgba(255, 255, 255, 0.1);
     box-sizing: border-box;
+    position: relative;
 }
 
 .notch h2, .notch p {
@@ -35,8 +61,32 @@ body {
     background: transparent;
     border: none;
     color: white;
-    font-size: 14px;
+    font-size: 20px;
     cursor: pointer;
+    font-weight: bold;
+    padding: 5px;
+}
+
+.language-selector option {
+    background-color: #1a1c2c;
+    color: white;
+}
+
+.balance-container {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 10px;
+    font-size: 16px;
+    color: white;
+    text-align: center;
+    display: flex;
+    gap: 5px;
+}
+
+#balance-label,
+#balance {
+    margin: 0;
 }
 
 .container {
@@ -47,7 +97,7 @@ body {
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
     text-align: center;
-    margin-top: 40px; /* Увеличил отступ сверху */
+    margin-top: 40px;
 }
 
 .grid {
@@ -96,6 +146,47 @@ body {
     margin-bottom: 10px;
 }
 
+.exit-button {
+    background: #ff4757;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    width: 100%;
+    transition: background 0.3s;
+}
+
+.exit-button:hover {
+    background: #ff6b81;
+}
+
+.promo-container {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.promo-input {
+    width: 100%;
+    padding: 15px;
+    background: #161825;
+    border: 2px solid #23263a;
+    border-radius: 8px;
+    color: white;
+    font-size: 16px;
+    text-align: center;
+}
+
+#activate-btn {
+    width: 100%;
+    padding: 20px;
+    font-size: 18px;
+    text-transform: uppercase;
+}
+
 @media (max-width: 450px) {
     .notch {
         height: 50px;
@@ -123,155 +214,4 @@ body {
         width: 40px;
         height: 40px;
     }
-}
-.language-selector {
-    margin-left: auto;
-    background: transparent;
-    border: none;
-    color: white;
-    font-size: 20px;
-    cursor: pointer;
-    font-weight: bold;
-    padding: 5px;
-}
-
-.language-selector option {
-    background-color: #1a1c2c;
-    color: white;
-}
-
-.notch {
-    width: 100%;
-    max-width: 400px;
-    height: 60px;
-    background: #1a1c2c;
-    border-bottom-left-radius: 20px;
-    border-bottom-right-radius: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 20px;
-    box-shadow: 0 2px 10px rgba(255, 255, 255, 0.1);
-    box-sizing: border-box;
-    position: relative;
-}
-
-.notch h2 {
-    margin: 0;
-    font-size: 16px;
-    white-space: nowrap;
-}
-
-.balance-container {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    top: 10px;
-    font-size: 16px;
-    color: white;
-    text-align: center;
-}
-
-#balance-label {
-    margin: 0;
-}
-
-#balance {
-    margin: 0;
-}
-
-.container {
-    width: 90%;
-    max-width: 400px;
-    background: #1a1c2c;
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-    text-align: center;
-    margin-top: 40px;
-}
-
-.grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: auto auto auto auto;
-    gap: 5px;
-    margin-top: 10px;
-}
-
-.button:nth-child(3),
-.button:nth-child(6) {
-    grid-column: span 2;
-}
-
-.button {
-    background: #161825;
-    color: white;
-    padding: 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    min-height: 100px;
-    transition: background 0.3s;
-    position: relative;
-    overflow: hidden;
-    flex-direction: column;
-}
-
-.button:hover {
-    background: #23263a;
-}
-/* Общие стили для кнопки выхода */
-.exit-button {
-    background: #ff4757;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-bottom: 20px;
-    width: 100%;
-    transition: background 0.3s;
-}
-
-.exit-button:hover {
-    background: #ff6b81;
-}
-
-/* Адаптация баланса в notch */
-.notch .balance-container {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 5px;
-}
-.promo-container {
-    margin-top: 30px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.promo-input {
-    width: 100%;
-    padding: 15px;
-    background: #161825;
-    border: 2px solid #23263a;
-    border-radius: 8px;
-    color: white;
-    font-size: 16px;
-    text-align: center;
-}
-
-#activate-btn {
-    width: 100%;
-    padding: 20px;
-    font-size: 18px;
-    text-transform: uppercase;
 }
